@@ -112,23 +112,124 @@ except requests.exceptions.MissingSchema:
 
 
 # 3. 응답 결과 파싱
-from  bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 
 html = """
 <html>
     <head>
-        <title>test title</title>
+        <title class="t" id="tid">test title</title>
     </head>
-    <body>
-        <p>HAHAHA</p>
-        <p>HAHAHA</p>
-        <p>HAHAHA</p>
+    <body> 
+        <p> HAHAHAHAHAHA </p>
+        <p> HAHAHAHAHAHA </p>
+        <p> HAHAHAHAHAHA </p>
     </body>
 </html>
 """
 
+
 soup = BeautifulSoup(html, 'lxml')
-print(soup.prettify()) # 태그 줄정리 기능
+print(soup)
 print(type(soup))
+
+print("=" * 50) ######################################## 9월 13일 ####################################
+# 태그 접근 #1. soup.태그명
+title = soup.title
+print(title)      # 내부의 하위 태그들 텍스트도 모두 가져옴
+print(title.text) # 정확히 태그에 대한 값만 가져옴
+print(title.name) # 태그명
+
+# 태그의 속성 접근
+print(title.attrs)  # 딕셔너리 타입
+print(title['class'])
+print(title['id'])
+# print(title['name']) 없는 속성을 꺼내면 에러발생!!
+print(title.get('name'))  # get을 사용하면 없으면 None이 나옴 좀더 안전하다
+print(title.get('class'))
+print(title.get('id'))
+
+# 자식 태그 접근 : contents, children
+html = """
+<html>
+    <head>
+        <title class="t abc" id="tid">test title</title>
+    </head>
+    <body> 
+        <p><span>AAAA</span><span>BBBB</span></p>
+    </body>
+</html>
+"""
+soup = BeautifulSoup(html, 'lxml')
+p_tag = soup.p
+print(p_tag)
+# print(p_tag.text)
+# print(p_tag.string) # p태그가 온전히 가지고있는 text가 없어서 None
+
+children = soup.p.contents
+print(children)
+children = soup.p.children # 이터레이터로 리턴 -> 반복문으로 꺼내서 사용
+print(children)
+for child in children:
+    print(child)
+
+print("=" * 100)
+# 부모태그 접근
+span_tag = soup.span
+print(span_tag)
+print(span_tag.parent)
+title(soup.title)
+print(title.parent)
+
+# parents : 최상위 부모까지 가져오기
+print("=" * 100)
+print(span_tag.parents)
+for p in span_tag.parents:
+    print(p)
+
+# 형제 태그 접근 : next_sibling, previous_sibling
+span_tag = soup.span
+print(span_tag)
+b = span_tag.next_sibling   # 다음 형제
+print(b)
+a = b.previous_sibling      # 이전 형제
+print(a)
+
+# 다음, 이전 요소 접근 : next_element, previous_element
+html = """
+<html>
+    <head>
+        <title class="t abc" id="tid">test title</title>
+    </head>
+    <body> 
+        <p>
+            <a>AAAA</a>
+            <b>BBBB</b>
+            <c>CCCC</c>
+        </p>
+    </body>
+</html>
+"""
+print("=" * 100)
+soup = BeautifulSoup(html, 'lxml') # html 바뀌면 요거 써서 새로잡아줘야함
+a = soup.a
+print(a)
+print(a.next_elements)
+for n in a.next_elements:
+    print(n)
+print(a.next_sibling)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
